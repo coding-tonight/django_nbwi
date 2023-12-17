@@ -1,0 +1,71 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- <div class="container mb-1 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary align-self-end"> <a href="{% url 'addRate' %}" class="text-white">Add
+            Rate</a></button>
+</div> -->
+
+<div class="row">
+    <table id="myTable" class="display table table-boarder">
+        <thead class="thead-dark">
+            <tr>
+                <th>S.N</th>
+                <th>date</th>
+                <th>Factory Name</th>
+                <th>Group</th>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transaction_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ transaction.transaction.date|date:"Y-m-d" }}</td>
+                <td>{{ transaction.transaction.factory_id  }}</td>
+                <td>{{ transaction.group_id }}</td>
+                <td>{{ transaction.item_id }}</td>
+                <td>{{ transaction.item_qty }}</td>
+                <td>{{ transaction.transaction.total_amount }}</td>
+                <td class="">
+                    <a  class="badge badge-info">Edit</a>
+                    <a  class="badge badge-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+
+
+{% endblock content %}

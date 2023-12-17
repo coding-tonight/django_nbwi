@@ -1,0 +1,149 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% block title %}
+{{ page_title }} |
+{% endblock title %}
+
+{% load static %}
+{% block content %}
+<!-- Small boxes (Stat box) -->
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+<div class="row">
+    <!-- date /day wedget -->
+    <div class="col-md-12 mb-4">
+        <div id="np_widget_wiz1"  widget="day-sm"></div>
+    </div>
+    <!-- end here -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ inventory_count }}</h3>
+
+                <p>Inventory</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>53<sup style="font-size: 20px">%</sup></h3>
+
+                <p>Cash</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ owner_count }}</h3>
+
+                <p>Owner</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{ factory_count}}</h3>
+
+                <p>Factory</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+<!-- /.row -->
+<!-- Main row -->
+
+<div class="col-md-12">
+    <h1 class="">Reports Summary</h1>
+    <div class="row">
+        <div class="col-md-12"> 
+          <canvas id="myChartBar" height="120"></canvas> 
+        </div>  
+        <!-- <div class="col-md-6">
+            <canvas id="myDoughnut"></canvas>
+        </div> -->
+    </div>
+    <h3 class="my-2">Sale Group report</h3>
+    <div class="row">
+        <div class="col-md-6"> 
+            <canvas id="myChartline"></canvas> 
+        </div> 
+        <div class="col-md-6">
+            <canvas id="myDoughnut"></canvas>
+        </div>
+    </div>
+    </div> 
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+<!-- /.row (main row) -->
+{% endblock content %}
+
+{% block script %}
+  <script>
+      {% for message in messages %}
+      {% if message.tags == "success" %}
+        Swal.fire({
+        title: 'Success',
+        text: '{{ message }}',
+        icon: 'success',
+        confirmButtonText: 'ok'
+        })
+       {% else %}
+            Swal.fire({
+            title: 'Error!',
+            text: '{{ message }}',
+            icon: 'error',
+            confirmButtonText: 'continue'
+            })
+        {% endif %}
+    {% endfor %}
+  </script>
+  <script  src="https://nepalipatro.com.np/np-widgets/nepalipatro.js" id="wiz1"></script> 
+  <script src="{% static 'chart.js' %}"></script>
+{% endblock script %}

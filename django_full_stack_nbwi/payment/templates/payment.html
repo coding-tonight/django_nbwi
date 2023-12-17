@@ -1,0 +1,125 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block title %}
+   {{ page_title }} | List
+{% endblock title %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+
+<div class="mb-1 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary align-self-end"> <a href="{% url 'addPayment' %}"
+            class="text-white">Add
+            Payment</a></button>
+</div>
+
+
+<div class="col-sm-12 table-responsive">
+    <table id="myTable" class="display table table-boarder">
+        <thead class="thead-dark">
+            <tr>
+                <th>S.N</th>
+                <th>Date</th>
+                <th>Owner Name</th>
+                <th>Mode Of Payment</th>
+                <th>Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ payment.date|date:'Y-m-d' }}</td>
+                <td>{{ payment.owner }}</td>
+                <td>{{ payment.mode_of_payment.account_name }}</td>
+                <th>{{ payment.amount }}</th>
+                <td>
+                    <a  href="{% url 'editPayment' payment.reference_id  %}" class="badge badge-info">Edit</a>
+                    <a  data-ref="{{ payment.reference_id }}" onclick="delete_function(this)" class="cursor-pointer badge badge-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+
+{% block script %}
+  <script>
+    function delete_function(value) {
+    // select ref id 
+    const id = value.dataset.ref
+    const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+      swalWithBootstrapButtons.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`/group/delete/${id}/`, {
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => resposne.json())
+        .catch(error => console.log(error.message))
+        swalWithBootstrapButtons.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        )
+        setTimeout(()=> {
+          window.location.reload()
+        }, 1000)
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Cancelled',
+          'Your imaginary file is safe :)',
+          'error'
+        )
+      }
+    })
+}
+  </script>
+{% endblock script %}
+{% endblock content %}

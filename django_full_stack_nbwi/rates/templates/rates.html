@@ -1,0 +1,148 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<div class="my-2 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary align-self-end"> <a href="{% url 'addRate' %}" class="text-white">Add
+            Rate</a></button>
+</div>
+<div class="col-sm-12 table-responsive">
+    <table id="myTable" class="display table table-boarder">
+        <thead class="thead-dark">
+            <tr>
+                <th>S.N</th>
+                <th>Group Name</th>
+                <th>Item Name</th>
+                <th>Sale Rent</th>
+                <th>Vehicle Rent</th>
+                <th>Product Charge</th>
+                <th>Wrapping</th>
+                <th>Label Charge</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rate in rates %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ rate.group_id }}</td>
+                <td>{{ rate.item_id }}</td>
+                <td>{{ rate.sale_rate }}</td>
+                <td>{{ rate.vehicle_rent }}</td>
+                <td>{{ rate.product_charge }}</td>
+                <td>{{ rate.wrapping }}</td>
+                {% if rate.label_charge %}
+                <td>{{ rate.label_charge }}</td>
+                {% else %}
+                <td>-</td>
+                {% endif %}
+                <td class="">
+                    <a href="{% url 'editRate' rate.reference_id  %}" class="badge badge-info">Edit</a>
+                    <a  class="badge badge-danger" data-ref="{{ rate.reference_id }}" onclick="delete_function(this)">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+
+
+{% block script %}
+  <script>
+    function delete_function(value) {
+    // select ref id 
+    const id = value.dataset.ref
+    const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+      swalWithBootstrapButtons.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`/rate/delete/${id}/`, {
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => resposne.json())
+        .catch(error => console.log(error.message))
+        swalWithBootstrapButtons.fire(
+          'Deleted!',
+          `Your Item has been deleted.`,
+          'success'
+        )
+        setTimeout(()=> {
+          window.location.reload()
+        }, 1000)
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Cancelled',
+          'Your imaginary file is safe :)',
+          'error'
+        )
+      }
+    })
+}
+
+
+{% for message in messages %}
+      {% if message.tags == "success" %}
+        Swal.fire({
+        title: 'Success',
+        text: '{{ message }}',
+        icon: 'success',
+        confirmButtonText: 'ok'
+        })
+       {% else %}
+            Swal.fire({
+            title: 'Error!',
+            text: '{{ message }}',
+            icon: 'error',
+            confirmButtonText: 'continue'
+            })
+        {% endif %}
+    {% endfor %}
+  </script>
+{% endblock script %}
+
+
+{% endblock content %}

@@ -1,0 +1,67 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<div class="row">
+    <form class="col-md-6" method="POST" action="{% url 'editAccount' account.id %}">
+        {% csrf_token %}
+        <div class="card-body">
+            <!-- <input type="hidden" name="pk" value="{{ account.id }"> -->
+            <div class="form-group">
+                <label for="exampleInputEmail1">Account Name:</label>
+                <input type="text" class="form-control" id="group-name" placeholder="Account Name" name="account_name"
+                    value="{{ account.account_name }}">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Account Number:</label>
+                <input type="text" class="form-control" id="group-name" placeholder="Account Number"
+                    name="account_number" value="{{ account.account_number }}">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Opening Balance:</label>
+                <input type="text" class="form-control" id="group-name" placeholder="Opening Balance"
+                    name="opening_balance" value="{{ account.opening_balance }}">
+            </div>
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            <span class="text-red">{{ message }}</span>
+            {% endif %}
+            {%  endfor %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">save</button>
+                <button type="button" class="btn btn-primary"><a class="nav-item text-white"
+                        href="{% url 'account' %}">back</a></button>
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </form>
+</div>
+
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+
+
+{% endblock content %}

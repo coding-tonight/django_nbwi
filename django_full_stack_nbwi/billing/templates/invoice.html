@@ -1,0 +1,480 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- <div class="callout callout-info">
+                    <h5><i class="fas fa-info"></i> Note:</h5>
+                    This page has been enhanced for printing. Click the print button at the bottom of the invoice to
+                    test.
+                </div> -->
+
+
+                <!-- Main content -->
+                <form class="p-3 mb-3" method="POST" action="{% url 'invoice' %}">
+                    {% csrf_token %}
+                    <!-- title row -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h4>
+                                <i class="fas fa-globe"></i> NBWI
+                            </h4>
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4 d-flex flex-column">
+                            <div class="float-right">Date: {% now  "d/m/Y"%}</div>
+                            <input type="date" name="date"  id="nepali-datepicker" class="form-control">
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- info row -->
+                    <div class="row invoice-info my-4">
+                        <!-- /.col -->
+                        <div class="col-sm-4 invoice-col">
+                            <div class="my-2 col-md-5">
+                                <label for="" class="form-label">Ref no:</label> 
+                                <input name="ref_no"  type="text" class="form-control"/>
+                            </div>
+                            <div class=" col-md-5">
+                                <label for="form-label">Factory: </label>
+                                <select class="form-control"
+                                    name="factory_id">
+                                    <option value="" selected="selected"></option>
+                                    {% for factory in factories %}
+                                    <option value="{{ factory.id }}">{{ factory.factory_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+
+                    <!-- Table row -->
+                    <div class="row mt-1">
+                        <div class="col-12 table-responsive">
+                            <table class="table invoice table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>S.N</th>
+                                        <th>Group</th>
+                                        <th>Item Name</th>
+                                        <!-- <th>Type</th> -->
+                                        <th>Quantity</th>
+                                        <th>Rates</th>
+                                        <th>Amount</th>
+                                        <th>Vehicle Rent</th>
+                                        <th>Product Charge</th>
+                                        <th>Wrapping</th>
+                                        <th>Label Charge</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-body">
+                                    <!-- <tr class="item-row">
+                                        <td><input class="case" type="checkbox" /></td>
+                                        <td>
+                                            <select class="select-search form-control w-100 h-100 text-center"
+                                                name="group" style="width: 200px">
+                                                <option value="" selected="selected"></option>
+                                                {% for group in groups %}
+                                                <option value="{{ group.id }}">{{ group.group_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td> <select class="select-search form-control w-100 h-100 text-center"
+                                                name="item_name" style="width: 200px" name="item_id">
+                                                <option value="" selected="selected"></option>
+                                                {% for item in items %}
+                                                <option value="{{ item.id }}">{{ item.item_name }}</option>
+                                                {% endfor %}
+                                            </select></td>
+                                        <td>
+                                            <input type="text" name="item_unit" class="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="item_qty" class="" onchange="rate(event)" />
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" name="rates" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" disabled name="amount" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" name="vehicle_rent" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" name="product_charge" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" name="wrapping" />
+                                            </div>
+                                        </td>
+                                    </tr> -->
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.col -->
+                        <div class="mb-1 d-flex justify-content-start gap-2">
+                            <button type="button" class="btn btn-primary align-self-end me-2 addRow">Add
+                                Item</button>
+                            <button type="button" class="btn btn-danger align-self-end ms-2 delete">Remove
+                                Item</button>
+                        </div>
+                    </div>
+
+                    <!-- /.row -->
+
+                    <div class="row">
+                        <!-- accepted payments column -->
+                        <div class="col-6">
+                            <!-- <p class="lead">Payment Methods:</p>
+                            <img src="../../dist/img/credit/visa.png" alt="Visa">
+                            <img src="../../dist/img/credit/mastercard.png" alt="Mastercard">
+                            <img src="../../dist/img/credit/american-express.png" alt="American Express">
+                            <img src="../../dist/img/credit/paypal2.png" alt="Paypal">
+
+                            <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya
+                                handango imeem
+                                plugg
+                                dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
+                            </p> -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-6">
+                            <p class="lead">Amount Due 2/22/2014</p>
+
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th style="width:50%">Total:</th>
+                                        <td><input type="text" name="total_amount"  class="form-control"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Product Charge:</th>
+                                        <td><input type="text" name="total_product_charge" class="form-control" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vehicle_rent Charge:</th>
+                                        <td><input type="text" name="total_vehicle_rent" class="form-control" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total Wrapping:</th>
+                                        <td><input type="text" name="total_wrapping" class="form-control" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total Label Charge:</th>
+                                        <td><input type="text" name="total_label_charge" class="form-control" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Mode of Payment:</th>
+                                        <td>
+                                            <select class="form-control"  name="account_id">
+                                                <option value="" selected="selected"></option>
+                                                {% for account in accounts %}
+                                                <option value="{{ account.id }}">{{ account.account_name }}</option>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total Received</th>
+                                            <td><input type="text" name="total_recevied" id="received" class="form-control" onkeyup="calculate_remaining(this)"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Remaining Amount:</th>
+                                            <td><input type="text" id="remaining"  class="form-control" readonly></td>
+                                        </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+
+                    <!-- this row will not appear when printing -->
+                    <div class="row no-print">
+                        <div class="col-12">
+                            <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i
+                                    class="fas fa-print"></i> Print</a>
+                            <button type="submit" class="btn btn-success float-right"><i class="far fa-credit-card"></i>
+                                Save Invoice
+                            </button>
+                            <!-- <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
+                                <i class="fas fa-download"></i> Generate PDF
+                            </button> -->
+                        </div>
+                    </div>
+                </form>
+                <!-- /.invoice -->
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+</div>
+
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+
+{% block script %}
+<script>
+    var i = $('.invoice tr').length;
+    $(".addRow").on('click', function () {
+        html = '<tr>';
+        html += '<td><input class="case" type="checkbox"/></td>';
+        html +=
+            `<td>
+                <select class="select-search form-control" onchange="itemFilter(this)" id="select_group"  style="width: 200px;" name="group_id">
+                    <option value="" selected="selected"></option>
+                    {% for group in groups %}
+                    <option value="{{ group.id }}"">{{ group.group_name }}</option>
+                    {% endfor %}
+                </select>
+            </td>`;
+        html +=
+            `<td><select class="form-control" id="select_item" onchange="itemTotal(this)" name="item_id" style="width: 300px;" name="item_id">
+                <option value="" selected="selected"></option> 
+                </select>
+            </td>`
+        // html += `<td>
+        //            <input type="text"  name="item_type" id="item_type_${i}" class="form-control" style="width: 60px;">
+        //          </td>`;
+        html += `<td>
+                     <input type="text" onkeyup="itemTotal(this)" name="item_qty" id="item_qty${i}" class="form-control autocomplete_txt" autocomplete="off" style="width: 80px;">
+                 </td>`;
+        html += `<td>
+                 <input type="text" name="rates" id="rates_${i}" class="form-control changesNo" onkeyup="itemTotal(this)" style="width: 170px;">
+                </td>`;
+        html += `<td>
+                   <input type="text" name="amount" id="amount_${i}" class="form-control changesNo" autocomplete="off"  disabled style="width: 200px;">
+                 </td>`;
+        html += `<td>
+                   <input type="text" name="vehicle_rent" id="vehicle_rent_${i}" class="form-control" autocomplete="off" onkeyup="totalVehicle()" ondrop="return false;" onpaste="return false;" class="width: 200px">
+                </td>`;
+        html += `<td>
+                  <input type="text" name="product_charge" id="product_charge_${i}" class="form-control totalLinePrice" autocomplete="off" onkeyup="totalProduct_charge()" ondrop="return false;" onpaste="return false;">
+                </td>`;
+        html += `<td>
+                   <input type="text" name="wrapping" id="wrapping_${i}" class="form-control totalLinePrice" autocomplete="off" onkeyup="totalWrapping()" ondrop="return false;" onpaste="return false;">
+                </td>`;
+        html += `<td>
+            <input type="text" name="label_charge" id="label_charge_${i}" class="form-control totalLinePrice" autocomplete="off" onkeyup="" ondrop="return false;" onpaste="return false;">
+        </td>`;
+        html += '</tr>';
+        $('.invoice').append(html);
+        i++;
+    });
+
+
+    // delete function 
+    $(".delete").on('click', function () {
+        $('.case:checkbox:checked').parents("tr").remove();
+        totalSum()
+        $('#check_all').prop("checked", false);
+    });
+    // save bill format
+</script>
+
+<script>
+    function itemFilter(value) {
+        let select_group = value.parentElement.parentElement.querySelector('#select_group')
+        let select_item = value.parentElement.parentElement.querySelector('#select_item')
+        const selected = select_group.options[select_group.selectedIndex].value
+        // reseting select_item for each select of the salegroup
+        select_item.innerHTML = ''
+        
+        {% for rate in rates %}
+           if('{{ rate.group_id.id }}' == selected) {
+               const newOption = document.createElement('option')
+               newOption.value = "{{ rate.item_id.id }}"
+               newOption.textContent = "{{ rate.item_id }}"
+            //    newOption.setAttribute("data-type", "{{ rate.item_id.item_type }}")
+               newOption.setAttribute("data-rate" , "{{ rate.sale_rate }}")
+               newOption.setAttribute("data-product-charge", "{{ rate.product_charge }}")
+               newOption.setAttribute("data-vehicle-rent", "{{ rate.vehicle_rent}}")
+               newOption.setAttribute("data-wrapping" , "{{ rate.wrapping }}")
+               newOption.setAttribute('data-label-charge', '{{ rate.label_charge }}')
+               newOption.setAttribute("name" , "item_id")
+               select_item.appendChild(newOption)
+           }
+        {% endfor %}
+        itemTotal()
+        
+    }
+
+    function itemTotal(value) {
+        let amount = value.parentElement.parentElement.querySelector('[name="amount"]')
+        let rate = value.parentElement.parentElement.querySelector('[name=rates]')
+        let item_qty = value.parentElement.parentElement.querySelector('[name="item_qty"]')
+        let product_charge = value.parentElement.parentElement.querySelector('[name="product_charge"]')
+        let vehicle_rent = value.parentElement.parentElement.querySelector('[name="vehicle_rent"]')
+        let wrapping = value.parentElement.parentElement.querySelector('[name="wrapping"]')
+        let label_charge = value.parentElement.parentElement.querySelector('[name="label_charge"]')
+        let item_type = value.parentElement.parentElement.querySelector('[name="item_type"]')
+        // selector item and group 
+        let select_group = value.parentElement.parentElement.querySelector('#select_group')
+        let select_item = value.parentElement.parentElement.querySelector('#select_item')
+        // item types
+        // item_type.value = select_item.options[select_item.selectedIndex].dataset.type
+        // item wise total calculation
+        product_charge.value = select_item.options[select_item.selectedIndex].dataset.productCharge * item_qty.value
+        vehicle_rent.value = select_item.options[select_item.selectedIndex].dataset.vehicleRent * item_qty.value
+        wrapping.value = select_item.options[select_item.selectedIndex].dataset.wrapping * item_qty.value
+        label_charge.value = select_item.options[select_item.selectedIndex].dataset.labelCharge * item_qty.value      
+        rate.value  =select_item.options[select_item.selectedIndex].dataset.rate
+        amount.value = item_qty.value * rate.value
+        // check if rates is undefined or Not a number
+       
+        totalSum()
+        totalVehicle()
+        totalWrapping()
+        totalProduct_charge()
+        totalLabelCharge() 
+    }
+
+    function totalSum() {
+        const table = document.querySelector('.table-body').children
+        const amount = document.querySelectorAll('[name="amount"]')
+        const total_amount = document.querySelector('[name="total_amount"]')
+        let total = 0
+        /** 
+         * calculate total amount
+         */
+        amount.forEach((value, index) => {
+            total = total + parseFloat(value.value)
+            total_amount.value = total.toFixed(2)
+        })
+
+    }
+
+    function totalVehicle() {
+        const table = document.querySelector('.table-body').children
+        const amount = document.querySelectorAll('[name="vehicle_rent"]')
+        const total_amount = document.querySelector('[name="total_vehicle_rent"]')
+        let total = 0
+        /** 
+         * calculate total  vehicle rent
+         */
+        amount.forEach((value, index) => {
+            total = total + parseFloat(value.value)
+            total_amount.value = total.toFixed(2)
+        })
+
+    }
+
+    function totalProduct_charge() {
+        const table = document.querySelector('.table-body').children
+        const amount = document.querySelectorAll('[name="product_charge"]')
+        const total_amount = document.querySelector('[name="total_product_charge"]')
+        let total = 0
+        /** 
+         * calculate total  Product Charge
+         */
+        amount.forEach((value, index) => {
+            total = total + parseFloat(value.value)
+            total_amount.value = total.toFixed(2)
+        })
+
+    }
+
+    function totalWrapping() {
+        const table = document.querySelector('.table-body').children
+        const amount = document.querySelectorAll('[name="wrapping"]')
+        const total_amount = document.querySelector('[name="total_wrapping"]')
+        let total = 0
+        /** 
+         * calculate total  vehicle rent
+         */
+        amount.forEach((value, index) => {
+            total = total + parseFloat(value.value)
+            total_amount.value = total.toFixed(2)
+        })
+    }
+    function totalLabelCharge() {
+        const table = document.querySelector('.table-body').children
+        const amount = document.querySelectorAll('[name="label_charge"]')
+        const total_amount = document.querySelector('[name="total_label_charge"]')
+        let total = 0
+        /** 
+         * calculate total  vehicle rent
+         */
+        amount.forEach((value, index) => {
+            total = total + parseFloat(value.value)
+            total_amount.value = total.toFixed(2)
+        })
+    }
+
+    function calculate_remaining(value) {
+        const shortcutAmount = document.querySelector('#remaining')
+        const total_amount = document.querySelector('[name="total_amount"]')
+
+        shortcutAmount.value = total_amount.value - value.value
+        console.log('work')
+    }
+
+    //alerts
+    {% for message in messages %}
+      {% if message.tags == "success" %}
+        Swal.fire({
+        title: 'Success',
+        text: '{{ message }}',
+        icon: 'success',
+        confirmButtonText: 'ok'
+        })
+       {% else %}
+            Swal.fire({
+            title: 'Error!',
+            text: '{{ message }}',
+            icon: 'error',
+            confirmButtonText: 'continue'
+            })
+        {% endif %}
+    {% endfor %}
+</script>
+<script src="{% static 'js/invoice.js' %}"></script>
+{% endblock script %}
+
+
+{% endblock content %}

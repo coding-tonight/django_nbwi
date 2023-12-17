@@ -1,0 +1,94 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+
+<div class="mb-1 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary align-self-end"> <a href="{% url 'addOwner' %}" class="text-white">Add
+            Owner</a></button>
+</div>
+
+
+<div class="col-sm-12 table-responsive">
+    <table id="myTable" class="display table table-boarder">
+        <thead class="thead-dark">
+            <tr>
+                <th>S.N</th>
+                <th>Owner Name</th>
+                 <th>Opening Balance</th>
+                <th>Address</th>
+                <th>Phone Number</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for owner in factoryOwners %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ owner.owner_name }}</td>
+                {% if owner.opening_balance %}
+                <td>{{ owner.opening_balance }}</td>
+                {% else %}
+                 <td>-</td>
+                 {% endif %}
+                <td>{{ owner.address }}</td>
+                <td>{{ owner.phone_number }}</td>
+                <td>
+                    <a href="{% url 'editOwner' owner.id %}" class="badge badge-info">Edit</a>
+                    <a href="" class="badge badge-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+{% block script %}
+  <script>
+     {% for message in messages %}
+      {% if message.tags == "success" %}
+        Swal.fire({
+        title: 'Success',
+        text: '{{ message }}',
+        icon: 'success',
+        confirmButtonText: 'ok'
+        })
+       {% else %}
+            Swal.fire({
+            title: 'Error!',
+            text: '{{ message }}',
+            icon: 'error',
+            confirmButtonText: 'continue'
+            })
+        {% endif %}
+    {% endfor %}
+  </script>
+{% endblock script %}
+
+{% endblock content %}

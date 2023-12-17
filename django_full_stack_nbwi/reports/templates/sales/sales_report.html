@@ -1,0 +1,117 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- <div class="container mb-1 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary align-self-end"> <a href="{% url 'addRate' %}" class="text-white">Add
+            Rate</a></button>
+</div> -->
+<div class="col-md-12 table-responsive">
+    <table id="report" class="display table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>S.N</th>
+                <th>Date</th>
+                <th>ref_no</th>
+                <th>Factory</th>
+                <th>Total Amount</th>
+                <th>Total Vehicle Rent</th>
+                <th>Total Product Charge</th>
+                <th>Total Wrapping</th>
+                <th>Mode of Payment</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                 <td>{{ transaction.date|date:'Y-m-d' }}</td>
+                <td>{{ transaction.ref_no }}</td>
+                <td>{{ transaction.factory_id }}</td>
+                <td>{{ transaction.total_amount }}</td>
+                <td>{{ transaction.total_vehicle_rent }}</td>
+                <td>{{ transaction.total_product_charge }}</td>
+                <td>{{ transaction.total_wrapping  }}</td>
+                <td>{{ transaction.account_id  }}</td>
+                <td class="">
+                    <a href="" class="badge badge-info">Edit</a>
+                    <a href="" class="badge badge-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="4" style="text-align:right">Total:</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+
+{% block script %}
+  <script>
+     new DataTable('#report', {
+    footerCallback: function (row, data, start, end, display) {
+        let api = this.api();
+ 
+        // Remove the formatting to get integer data for summation
+        let intVal = function (i) {
+            return typeof i === 'string'
+                ? i.replace(/[\$,]/g, '') * 1
+                : typeof i === 'number'
+                ? i
+                : 0;
+        };
+ 
+        // Total over all pages
+        total = api
+            .column(4)
+            .data()
+            .reduce((a, b) => intVal(a) + intVal(b), 0);
+ 
+        // Total over this page
+        pageTotal = api
+            .column(4, { page: 'current' })
+            .data()
+            .reduce((a, b) => intVal(a) + intVal(b), 0);
+ 
+        // Update footer
+        api.column(4).footer().innerHTML = `Rs ${pageTotal} Rs   ${total} total`;
+
+    },
+});
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+{% endblock script %}
+
+{% endblock content %}

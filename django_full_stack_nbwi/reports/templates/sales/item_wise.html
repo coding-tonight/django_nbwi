@@ -1,0 +1,209 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<form  method="POST" action="{% url 'saleItemWise' %}" class="d-flex justify-content-center flex-column">
+    {% csrf_token %}
+    <div class="col-md-3">
+        <label for="">From Date:</label>
+        <input type="date" class="form-control" id="nepali-datepicker" name="start_date"
+            value="{{ start_date|date:'Y-m-d' }}">
+    </div>
+    <div class="col-md-3 my-3">
+        <label for="">To Date:</label>
+        <input type="date" class="form-control nepali-date" value="{{ today_date|date:'Y-m-d' }}" name="end_date">
+    </div>
+    <div class="col-md-3 mb-3 ">
+        <button class="btn btn-primary">filter</button>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-sm-12 table-responsive">
+        <table id="" class="table table-bordered caption-top" onload="">
+            <!-- <caption>{{ factory.factory_name }}</caption> -->
+            <thead class="thead-dark">
+                <th>Date</th>
+                 {% for factory in factories %}
+                <th colspan="3">{{ factory.factory_name }}</th>
+                 {% endfor %}
+                 <th colspan="3">Total</th>
+            </thead>
+            <tbody id="table_body">
+                <tr class="thead-dark sub-heading">
+                     <th class="heading" data-factory="date"></th>
+                     {% for factory in factories %}
+                        <th class="heading" data-factory="{{ factory.factory_name }}" data-type="jar">JAR</th>
+                        <th class="heading" data-factory="{{ factory.factory_name }}" data-type ="crtn">CRTN</th>
+                        <th class="heading" data-factory="{{ factory.factory_name }}" data-type="Outside">CRTN OUTSIDE</th>
+                     {% endfor %}
+                     <th class="heading" data-factory="jar_total">JAR</th>
+                     <th class="heading" data-factory="crtn_total">CRTN</th>
+                     <th class="heading" data-factory="outside_total">CRTN OUTSIDE</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+
+{% block script %}
+<script>
+    // 
+    window.addEventListener('DOMContentLoaded', function () {
+        // to prevent running funtion  twice
+        if (event.isTrusted) {
+            event.stopImmediatePropagation();
+        }
+        var mainInput = document.getElementById("nepali-datepicker");
+        var secondaryInput = document.querySelector('.nepali-date')
+        mainInput.nepaliDatePicker();
+        secondaryInput.nepaliDatePicker();
+
+        let tables = document.querySelector('.table')
+        let sub_heading = document.querySelectorAll('.heading')
+
+        /** 
+         * seperating key and value
+         * @parms @string
+         * @value @array
+         * @type jar , crtn , outside 
+         * all the items containing jar in the name should be stored at the jar column 
+         * all the items the has saletype outside should be containin the outside column
+         * remaing items should be store in the crtn column
+        */ 
+         
+
+        {% for key , value in data.items %}  
+            var row = tables.insertRow() // creating row
+         
+        for([index ,tableRow] of sub_heading.entries()) {
+            // let jarTotal = 0
+            // let crtnTotal = 0
+            // let outsideTotal = 0
+            let cell = row.insertCell()
+
+            {% for item_detail in value %}
+              /** 
+               *  @check if type  is date then add item qty to the cell
+              */
+             if(tableRow.dataset.factory == 'date') {
+                 // cell.textContent = tableRow.dataset.factory == 'date' ? '{{ item|date:'Y-m-d' }}': '-'  
+                 cell.textContent = '{{ key }}';
+             }  
+
+            //    total of each row 
+            //  total of jar
+              if(tableRow.dataset.factory == 'jar_total') {
+                if('{{ item_detail.item_type }}' == 'Jar') {
+                   cell.innerText = Number(cell.innerText) + parseFloat('{{ item_detail.item_qty }}');
+                }
+              } 
+            //   total of crtn_total
+              if(tableRow.dataset.factory == 'crtn_total') {
+                if('{{ item_detail.item_type }}' == 'Ct' &&  '{{ item_detail.sale_group }}' != 'Outside') {
+                   cell.innerText = Number(cell.innerText) + parseFloat('{{ item_detail.item_qty }}');
+                }
+              } 
+              // total of outside   
+              if(tableRow.dataset.factory == 'outside_total') {
+                if('{{ item_detail.item_type }}' == 'Ct' && '{{ item_detail.sale_group }}' == 'Outside') {
+                   cell.innerText = Number(cell.innerText) + parseFloat('{{ item_detail.item_qty }}');
+                }
+              } 
+           
+              /** 
+               *  @check if item_type is jar then add item qty to the cell
+              */
+              if(tableRow.dataset.factory == '{{ item_detail.factory_name }}' && tableRow.dataset.type == 'jar' && '{{ item_detail.item_type }}' == 'Jar') {
+                cell.innerText = Number(cell.innerText) + parseFloat('{{ item_detail.item_qty }}');
+              }
+               /** 
+               *  @check if item_type is outside then add item qty to the cell
+              */
+              if(tableRow.dataset.factory == '{{ item_detail.factory_name }}' && tableRow.dataset.type == 'Outside' && '{{ item_detail.item_type }}' == 'Ct' && '{{ item_detail.sale_group }}' == 'Outside') {
+                cell.innerText = Number(cell.innerText) + parseFloat('{{ item_detail.item_qty }}');
+                // outsideTotal += parseFloat('{{ item_detail.item_qty}}')
+                // console.log(outsideTotal + '{{ item_detail.factory_name }}')
+              }
+               /** 
+               *  @check if item_type is not outside  add item qty to the cell
+              */
+             
+              if(tableRow.dataset.factory == '{{ item_detail.factory_name }}' && tableRow.dataset.type == 'crtn' && '{{ item_detail.item_type }}' == 'Ct' && '{{ item_detail.sale_group }}' != 'Outside') {
+                cell.innerText = Number(cell.innerText) + parseFloat('{{ item_detail.item_qty }}');
+                // crtnTotal += parseFloat('{{ item_detail.item_qty }}')
+                // console.log(crtnTotal + '{{ item_detail.factory_name }}')
+              }
+
+            //   cell.innerText = Number(cell.innerText) + parseFloat('{{ item_detail.item_qty }}')
+            {% endfor %}
+            }
+        {% endfor %}
+          
+        let tableBody = document.querySelector('#table_body');
+        // console.log(tableBody.children[1].children[1].textContent)
+        // Iterate through the child elements
+
+        // creating tables footer for total 
+        let footer = tables.createTFoot();
+        let footer_row = footer.insertRow();
+        
+        for(let i=0; i<tableBody.children[0].children.length; i++) {
+            let cell = footer_row.insertCell()            
+        }
+        // end here 
+        
+        let tableFooter = tables.querySelector('tfoot');
+        // style for footer
+        tableFooter.style.backgroundColor = '#000';
+        tableFooter.style.color = "#fff";
+
+        // console.log(tableFooter.children[0].children)
+        
+        // calculating total of each column in the item wise report
+        // loop starting with index 1 cause we are exluding the  date for the total calculation
+        for(let i = 1; i<tableBody.children.length; i++) {  
+            let tr = tableBody.children[i];
+
+            for(let j = 1; j<tr.children.length; j++) {
+
+                let cellValue = tr.children[j].innerText 
+                tableFooter.children[0].children[j].innerText = Number(tableFooter.children[0].children[j].innerText) + Number(cellValue)
+                // console.log(cellValue)
+            }
+
+        }
+
+
+    }, {
+        once: true
+    })
+</script>
+{% endblock script %}
+
+{% endblock content %}

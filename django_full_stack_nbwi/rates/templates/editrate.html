@@ -1,0 +1,116 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<div class="row">
+    <form class="col-md-6" method="POST" action="{% url 'editRate' rate.reference_id %}">
+        {% csrf_token %}
+        <div class="card-body">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Group Name:</label>
+                <select class="select-search  js-states form-control text-center" name="group_id"
+                    placeholder="Group Name">
+                    {% for group in groups %}
+                    <option value="{{ group.id }}" {% if group.id == rate.group_id %} selected="selected {% endif %}">
+                        {{ group.group_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Item Name:</label>
+                <select class="select-search form-control text-center" name="item_id" placeholder="Item Name">
+                    <option value="" selected="selected"></option>
+                    {% for item in items %}
+                    <option value="{{ item.id }}" {% if item.id == rate.item_id.id %} selected="selected" {% endif %}>
+                        {{ item.item_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Sale Rate</label>
+                <input type="text" class="form-control" id="group-name" placeholder="Sale Rate" name="sale_rate"
+                    value="{{ rate.sale_rate }}">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Vehicle Rent</label>
+                <input type="text" class="form-control" id="group-name" placeholder="Vehicle Rent" name="vehicle_rent"
+                    value="{{ rate.vehicle_rent }}">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Product Charge</label>
+                <input type="text" class="form-control" id="group-name" placeholder="Product Charge" name="product_charge"
+                    value="{{ rate.product_charge }}">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Wrapping</label>
+                <input type="text" class="form-control" id="group-name" placeholder="Wrapper" name="wrapping"
+                    value="{{ rate.wrapping }}">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Label Charge</label>
+                <input type="text" class="form-control" id="group-name" placeholder="Label Charge" name="label_charge" value="{{ rate.label_charge }}">
+            </div>
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            <span class="text-red">{{ message }}</span>
+            {% endif %}
+            {%  endfor %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">save</button>
+                <button type="button" class="btn btn-primary"><a class="nav-item text-white"
+                        href="{% url 'rates' %}">back</a></button>
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </form>
+</div>
+
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+
+{% endblock content %}
+
+{% block script %}
+  <script>
+     {% for message in messages %}
+      {% if message.tags == "success" %}
+        Swal.fire({
+        title: 'Success',
+        text: '{{ message }}',
+        icon: 'success',
+        confirmButtonText: 'ok'
+        })
+       {% else %}
+            Swal.fire({
+            title: 'Error!',
+            text: '{{ message }}',
+            icon: 'error',
+            confirmButtonText: 'continue'
+            })
+        {% endif %}
+    {% endfor %}
+  </script>
+{% endblock script %}

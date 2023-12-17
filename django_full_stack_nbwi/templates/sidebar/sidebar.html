@@ -1,0 +1,186 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="{% url 'dashboard' %}" class="brand-link">
+        <img src="{% static 'img/autonomous_logo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">
+        <span class="brand-text font-weight-light">CMS</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="{% static 'img/autonomous_logo.png' %}" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="/" class="d-block">Administrator</a>
+            </div>
+        </div>
+
+        <!-- SidebarSearch Form -->
+        <!-- <div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-sidebar">
+                        <i class="fas fa-search fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+       with font-awesome or any other icon font library -->
+
+                <li class="nav-item">
+                    <a href="{% url 'dashboard' %}" class="nav-link">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Dashboard
+                            <!-- <span class="right badge badge-danger">New</span> -->
+                        </p>
+                    </a>
+                </li>
+
+                <!-- <li class="nav-item">
+                    <a href="pages/widgets.html" class="nav-link">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Widgets
+                            <span class="right badge badge-danger">New</span>
+                        </p>
+                    </a>
+                </li> -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <!-- <i class="nav-icon fas fa-copy"></i> -->
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Master
+                            <i class="fas fa-angle-left right"></i>
+                            <!-- <span class="badge badge-info right">4</span> -->
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'group' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Group</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'rates' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Rates</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'factory' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Factory</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'owner' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Owner</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'item' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Inventory</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'account' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Account</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <!-- <i class="nav-icon fas fa-copy"></i> -->
+                        <i class="nav-icon fas fa-edit"></i>
+                        <p>
+                            Transaction
+                            <i class="fas fa-angle-left right"></i>
+                            <!-- <span class="badge badge-info right">4</span> -->
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'invoice' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Invoice</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'invoice' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Purchase</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-chart-pie"></i>
+                        <p>
+                            Reports
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'salesReport' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Sale report</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'ledgerReport' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Ledger report</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-cube"></i>
+                        <p>
+                            Journal
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'payment' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Payment</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'receipts' %}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Receipts</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

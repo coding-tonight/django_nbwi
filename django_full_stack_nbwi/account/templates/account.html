@@ -1,0 +1,116 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block  content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<div class="mb-1 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary align-self-end"> <a href="{% url 'addAccount' %}"
+            class="text-white">Add
+            Account</a></button>
+</div>
+<div class="col-sm-12">
+    <table id="myTable" class="display table table-boarder">
+        <thead class="thead-dark">
+            <tr>
+                <th>S.N</th>
+                <th>Account Name</th>
+                <th>Account Number</th>
+                <th>Opening Balance</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account in accounts %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ account.account_name }}</td>
+                <td>{{ account.account_number }}</td>
+                <td>{{ account.opening_balance }}</td>
+                <td class="">
+                    <a href="{% url 'editAccount' account.reference_id %}" class="badge badge-info">Edit</a>
+                    <a  data-ref="{{ account.reference_id}}" onclick="delete_function(this)" class="badge badge-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+
+</div>
+<!-- /.card -->
+
+<!-- right col -->
+</div>
+
+
+{% block script %}
+<script>
+   function delete_function(value) {
+    // select ref id 
+    const id = value.dataset.ref
+    const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+      swalWithBootstrapButtons.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`/account/delete/${id}/`, {
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => resposne.json())
+        .catch(error => console.log(error.message))
+        swalWithBootstrapButtons.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        )
+        setTimeout(()=> {
+          window.location.reload()
+        }, 1000)
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Cancelled',
+          'Your imaginary file is safe :)',
+          'error'
+        )
+      }
+    })
+}
+</script>
+{% endblock script %}
+{% endblock content %}
